@@ -1,40 +1,42 @@
-const MovieService = require('../services/movie.service');
-const Boom = require('boom');
+const MovieService = require("../services/movie.service");
 const Joi = require("joi");
 
-class MovieService {
-    constructor () {
-        this.movieService = new MovieService();
+class MovieController {
+  constructor() {
+    this.movieService = new MovieService();
+  }
+  //전체영상 조회
+  allMovies = async (req, res, next) => {
+    try {
+      const movie = await this.movieService.allMovies();
+      res.status(200).json({ movies: movie });
+    } catch (error) {
+      next(error);
     }
-
-    postMovie = async(req,res) => {
-        try {
-            const {title, category, desc, playtime, actor, genre, thumbUrl, streamUrl} = req.body;
-            
-            const messages = {
-                "string.base": "이 필드는 문자열로 이루어져야 합니다.",
-                "string.empty": "이 필드는 비어 있을 수 없습니다.",
-                "string.min": "이 필드는 최소 {{#limit}} 문자 이상이어야 합니다.",
-                "string.max": "이 필드는 최대 {{#limit}} 문자 이하여야 합니다.",
-                "any.required": "이 필드는 필수입니다.",
-            };
-
-            const schema = Joi.object({
-                title: Joi.string().min(1).max(30).messages(),
-                category: ,
-                desc: ,
-                thumbUrl: ,
-                streamUrl: ,
-            });
-        } catch (error) {
-            if (Boom.isBoom(error)) {
-                res.status(error.statusCode).json({ errorMessage: error.message }); // 에러 메시지를 설정하면 이쪽으로 빠집니다.
-              } else {
-                res.status(400).json({ errorMessage: "영상 등록에 실패하였습니다." });
-              }
-        }
+  };
+  //카테고리별 조회
+  //   moviesByCategory = async (req, res, next) => {
+  //     try {
+  //          const {categoryId} = req.params;
+  //       const category = await this.movieService.moviesByCategory(categoryId);
+  //       res.status(200).json({ category });
+  //     } catch (error) {
+  //       next(error);
+  //     }
+  //   };
+  //영상 상세조회
+  onesMovie = async (req, res, next) => {
+    try {
+      const { categoryId, movieId } = req.params;
+      const findByMovie = await this.movieService.onesMovie(
+        categoryId,
+        movieId
+      );
+      res.status(200).json({ movie: findByMovie });
+    } catch (error) {
+      next(error);
     }
-
-    updateMovie
-    deleteMovie
+  };
 }
+
+module.exports = MovieController;
