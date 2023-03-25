@@ -1,4 +1,3 @@
-
 const MovieService = require("../services/movie.service");
 const Joi = require("joi");
 
@@ -41,4 +40,3 @@ class MovieController {
 }
 
 module.exports = MovieController;
-
