@@ -45,6 +45,38 @@ class MovieRepository extends Content {
     });
     return findOnesMovie;
   };
+
+  //찜목록 조회
+  savedVideo = async (saveIdx) => {
+    const findMovies = await Content.savedVideo({
+      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+    });
+    return findMovies;
+  };
+
+  //viewRank순 조회
+  viewRank = async (viewRankIdx) => {
+    const findMovies = await Content.viewRank({
+      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+    });
+    return findMovies;
+  };
+
+  //likeRank순 조회
+  likeRank = async (likeRankIdx) => {
+    const findMovies = await Content.likeRank({
+      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+    });
+    return findMovies;
+  };
+
+  //viewHistory가 있을때 조회
+  viewHistory = async (viewHistoryIdx) => {
+    const findMovies = await Content.viewHistory({
+      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+    });
+    return findMovies;
+  };
 }
 
 module.exports = MovieRepository;

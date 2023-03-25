@@ -18,19 +18,15 @@ router.get("/:contentIdx", movieController.onesMovie);
 // router.get("/:contentIdx", authMiddleware, movieController.onesMovie);
 
 //찜목록 조회
-// router.get("/:saveIdx", authMiddleware, movieController.savedVideo);
+router.get("/:saveIdx", authMiddleware, movieController.savedVideo);
 
 // //viewRank순 조회
-// router.get("/viewRankIndx", authMiddleware, movieController.viewRank);
+router.get("/viewRankIndx", authMiddleware, movieController.viewRank);
 
 // //likeRank순 조회
-// router.get("/likeRankIdx", authMiddleware, movieController.likeRank);
+router.get("/likeRankIdx", authMiddleware, movieController.likeRank);
 
 // //viewHistory가 있을때 조회
-// router.get(
-//   "/viewHistroyIdx",
-//   authMiddleware,
-//   movieController.viewHistory
-// );
+router.get("/viewHistoryIdx", authMiddleware, movieController.viewHistory);
 
 module.exports = router;

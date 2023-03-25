@@ -39,6 +39,50 @@ class MovieController {
       next(error);
     }
   };
+
+  //찜목록 조회
+  savedVideo = async (req, res, next) => {
+    try {
+      const { saveIdx } = req.params;
+      const category = await this.movieService.savedVideo(saveIdx);
+      res.status(200).json({ category });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //viewRank순 조회
+  viewRank = async (req, res, next) => {
+    try {
+      const { viewRankIdx } = req.params;
+      const category = await this.movieService.viewRank(viewRankIdx);
+      res.status(200).json({ category });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //likeRank순 조회
+  likeRank = async (req, res, next) => {
+    try {
+      const { likeRankIdx } = req.params;
+      const category = await this.movieService.likeRank(likeRankIdx);
+      res.status(200).json({ category });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //viewHistory가 있을때 조회
+  viewHistory = async (req, res, next) => {
+    try {
+      const { viewHistoryIdx } = req.params;
+      const category = await this.movieService.viewHistory(viewHistoryIdx);
+      res.status(200).json({ category });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 module.exports = MovieController;

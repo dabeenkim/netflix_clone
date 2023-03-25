@@ -28,6 +28,42 @@ class MovieService {
     }
     return movie;
   };
+
+  //찜목록 조회
+  savedVideo = async (saveIdx) => {
+    const category = await this.movieRepository.savedVideo(saveIdx);
+    if (!category) {
+      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
+    }
+    return category;
+  };
+
+  //viewRank순 조회
+  viewRank = async (viewRankIdx) => {
+    const category = await this.movieRepository.viewRank(viewRankIdx);
+    if (!category) {
+      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
+    }
+    return category;
+  };
+
+  //likeRank순 조회
+  likeRank = async (likeRankIdx) => {
+    const category = await this.movieRepository.likeRank(likeRankIdx);
+    if (!category) {
+      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
+    }
+    return category;
+  };
+
+  //viewHistory가 있을때 조회
+  viewHistory = async (viewHistoryIdx) => {
+    const category = await this.movieRepository.viewHistory(viewHistoryIdx);
+    if (!category) {
+      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
+    }
+    return category;
+  };
 }
 
 module.exports = MovieService;
