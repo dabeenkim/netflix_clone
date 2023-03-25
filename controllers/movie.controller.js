@@ -1,4 +1,3 @@
-
 const MovieService = require("../services/movie.service");
 const Joi = require("joi");
 
@@ -15,16 +14,18 @@ class MovieController {
       next(error);
     }
   };
-  //카테고리별 조회
-  //   moviesByCategory = async (req, res, next) => {
-  //     try {
-  //          const {categoryId} = req.params;
-  //       const category = await this.movieService.moviesByCategory(categoryId);
-  //       res.status(200).json({ category });
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   };
+
+  // 카테고리별 조회
+  moviesByCategory = async (req, res, next) => {
+    try {
+      const { categoryId } = req.params;
+      const category = await this.movieService.moviesByCategory(categoryId);
+      res.status(200).json({ category });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   //영상 상세조회
   onesMovie = async (req, res, next) => {
     try {
@@ -41,4 +42,3 @@ class MovieController {
 }
 
 module.exports = MovieController;
-
