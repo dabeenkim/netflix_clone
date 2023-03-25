@@ -1,21 +1,21 @@
-const { Movies } = require('../models');
-const { Op } = require('sequelize');
+// const { Movies } = require('../models');
+// const { Op } = require('sequelize');
 
-class AdminRepository {
-    
-    postMovie = async({title, category, desc, playtime, actor, genre, thumbUrl, movieUrl}) => {
-        await Movies.create({title, category, desc, playtime, actor, genre, thumbUrl, movieUrl});
-    }
+// class AdminRepository {
 
-    findOneMovie = async({movieId}) => {
-        const movie = await Movies.findOne({where: {movieId}});
-        return movie;
-    }
+//     postMovie = async({title, category, desc, playtime, actor, genre, thumbUrl, movieUrl}) => {
+//         await Movies.create({title, category, desc, playtime, actor, genre, thumbUrl, movieUrl});
+//     }
 
-    deleteMovie = async({movieId}) => {
-        await Movies.destroy({where: {movieId}});
-        return;
-    }
-}
+//     findOneMovie = async({movieId}) => {
+//         const movie = await Movies.findOne({where: {movieId}});
+//         return movie;
+//     }
 
-module.exports = AdminRepository;
+//     deleteMovie = async({movieId}) => {
+//         await Movies.destroy({where: {movieId}});
+//         return;
+//     }
+// }
+
+// module.exports = AdminRepository;
