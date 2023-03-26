@@ -28,7 +28,7 @@ router.get(
 // );
 
 // //viewRank순 조회
-router.get("/movies/:contentIdx/:viewRankIndx", movieController.viewRank);
+router.get("/movies/:contentIdx/:viewRankIdx", movieController.viewRank);
 // router.get(
 //   "/movies/:contentIdx/:viewRankIndx",
 //   authMiddleware,

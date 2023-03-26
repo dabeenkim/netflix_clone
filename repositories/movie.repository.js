@@ -1,4 +1,11 @@
-const { Content, Participant, Category, Save, profile } = require("../models");
+const {
+  Content,
+  Participant,
+  Category,
+  Save,
+  ViewRank,
+  LikeRank,
+} = require("../models");
 const { Op } = require("sequelize");
 
 class MovieRepository extends Content {
@@ -75,8 +82,21 @@ class MovieRepository extends Content {
 
   //viewRank순 조회
   viewRank = async (viewRankIdx, contentIdx) => {
+    console.log(viewRankIdx);
     const findMovies = await Content.findAll({
+      raw: true,
+      where: { contentIdx },
       attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+      limit: 10,
+      include: [
+        {
+          model: ViewRank,
+          where: {
+            [Op.and]: [{ viewRankIdx }, { contentIdx }],
+          },
+          attributes: [], //값을 설정해주지않으면 viewRank의 모든 값이나오게된다.
+        },
+      ],
     });
     return findMovies;
   };
@@ -84,7 +104,18 @@ class MovieRepository extends Content {
   //likeRank순 조회
   likeRank = async (likeRankIdx, contentIdx) => {
     const findMovies = await Content.findAll({
+      raw: true,
+      where: { contentIdx },
       attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+      limit: 10,
+      include: [
+        {
+          model: LikeRank,
+          where: {
+            [Op.and]: [{ likeRankIdx }, { contentIdx }],
+          },
+        },
+      ],
     });
     return findMovies;
   };
@@ -92,7 +123,18 @@ class MovieRepository extends Content {
   //viewHistory가 있을때 조회
   viewHistory = async (viewHistoryIdx, contentIdx) => {
     const findMovies = await Content.findAll({
+      raw: true,
+      where: { contentIdx },
       attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+      limit: 10,
+      include: [
+        {
+          model: this.viewHistory,
+          where: {
+            [Op.and]: [{ contentIdx }, { viewHistoryIdx }],
+          },
+        },
+      ],
     });
     return findMovies;
   };
