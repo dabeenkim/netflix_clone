@@ -4,16 +4,16 @@ class ProfileRepository extends Profile {
   constructor() {
     super();
   }
-  createProfile = async (profieName, userIdx) => {
-    const createProfie = await Profile.create({ profieName, userIdx });
-    return createProfie;
+  createProfile = async (profileName, userIdx) => {
+    const createProfile = await Profile.create({ profileName, userIdx });
+    return createProfile;
   };
   getAllProfile = async (userIdx) => {
     const profile = await Profile.findAll({
       attributes: [
         'profileIdx',
         'userIdx',
-        'profieName',
+        'profileName',
         'profileImgUrl',
         'viewLimit',
         'status',
@@ -27,6 +27,12 @@ class ProfileRepository extends Profile {
     });
 
     return profile; // 변환된 데이터 배열 반환
+  };
+  findByID = async (profileName) => {
+    const findProfileName = await Profile.findOne({
+      where: { profileName },
+    });
+    return findProfileName;
   };
 }
 
