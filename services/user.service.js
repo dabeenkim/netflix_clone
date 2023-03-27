@@ -61,11 +61,10 @@ class UserService {
 
   /**
    * @param {String} email
-   * @param {String} nickname
    * @param {String} password
    */
   //회원가입
-  userSignup = async (email, nickname, password) => {
+  userSignup = async (email, password) => {
     try {
       await userSchema.validate({ email, password });
 
@@ -82,15 +81,9 @@ class UserService {
         throw Boom.conflict("중복된 이메일 주소 입니다");
       }
 
-      const existNickname = await this.userRepository.findBynickname(nickname);
-
-      if (existNickname) {
-        throw Boom.conflict("중복된 닉네임 입니다");
-      }
-
       const hashedPassword = await createHashPassword(password);
 
-      await this.userRepository.userSignup(email, nickname, hashedPassword);
+      await this.userRepository.userSignup(email, hashedPassword);
     } catch (error) {
       logger.error(error.message);
       throw error;
@@ -105,10 +98,10 @@ class UserService {
     });
     return allUsers.map((user) => {
       return {
-        userId: user.userId,
         email: user.email,
-        nickname: user.nickname,
         passwd: user.password,
+        status: user.status,
+        userIdx: user.userIdx,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };

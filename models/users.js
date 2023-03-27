@@ -25,10 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      userId: {
-        allowNull: false, // NOT NULL
-        type: DataTypes.STRING,
-      },
       email: {
         allowNull: false, // NOT NULL
         unique: true,
@@ -39,8 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       status: {
-        allowNull: false, // NOT NULL
+        allowNull: true, // NOT NULL
         type: DataTypes.UUID,
+        defaultValue:
+        'US000001'
       },
       createdAt: {
         allowNull: false, // NOT NULL
