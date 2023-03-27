@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware");
+const authMiddleware = require("../middlewares/authMiddlewareProfile");
 const MovieController = require("../controllers/movie.controller");
 const movieController = new MovieController();
 
@@ -16,38 +16,19 @@ router.get("/category/:genre", movieController.videosByCategory);
 // router.get("/:categoryIdx", authMiddleware, movieController.moviesByCategory);
 
 //영상 상세조회
-router.get("/:contentIdx", movieController.onesMovie);
+router.get("/detail/:contentIdx", movieController.onesMovie);
 // router.get("/:contentIdx", authMiddleware, movieController.onesMovie);
 
 //찜목록 조회
-router.get(
-  "/movies/:profileIdx/:contentIdx/:saveIdx",
-  authMiddleware,
-  movieController.savedVideo
-);
+router.get("/save", authMiddleware, movieController.savedVideo);
 
 // //viewRank순 조회
-router.get("/rank/view", movieController.viewRank);
-// router.get(
-//   "/movies/:contentIdx/:viewRankIndx",
-//   authMiddleware,
-//   movieController.viewRank
-// );
+router.get("/rank/view", authMiddleware, movieController.viewRank);
 
 // //likeRank순 조회
-router.get("/rank/like", movieController.likeRank);
-// router.get(
-//   "/movies/:contentIdx/:likeRankIdx",
-//   authMiddleware,
-//   movieController.likeRank
-// );
+router.get("/rank/like", authMiddleware, movieController.likeRank);
 
 // //viewHistory가 있을때 조회
-router.get("/viewHistory", movieController.viewHistory);
-// router.get(
-//   "/movies/:contentIdx/:viewHistoryIdx",
-//   authMiddleware,
-//   movieController.viewHistory
-// );
+router.get("/viewHistory", authMiddleware, movieController.viewHistory);
 
 module.exports = router;

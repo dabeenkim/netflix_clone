@@ -22,7 +22,7 @@ class MovieRepository extends Content {
   };
 
   //영상 카테고리 전달
-  FindCategoty = async () => {
+  FindCategory = async () => {
     const findCategory = await CommonCodes.findAll({
       attributes: ["codeValue", "codeName"],
     });
@@ -81,20 +81,20 @@ class MovieRepository extends Content {
   };
 
   //찜목록 조회
-  savedVideo = async (saveIdx, contentIdx, profileIdx) => {
+  savedVideo = async () => {
     const findMovies = await Content.findAll({
-      raw: true,
-      where: { contentIdx },
-      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
-      include: [
-        {
-          model: Save,
-          where: {
-            [Op.and]: [{ saveIdx }, { profileIdx }],
-          },
-          attributes: [], // 추가한 옵션
-        },
-      ],
+      // raw: true,
+      // where: { contentIdx },
+      // attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+      // include: [
+      //   {
+      //     model: Save,
+      //     where: {
+      //       [Op.and]: [{ saveIdx }, { profileIdx }],
+      //     },
+      //     attributes: [], // 추가한 옵션
+      //   },
+      // ],
     });
     return findMovies;
   };

@@ -13,7 +13,10 @@ class MovieService {
 
   //영상 카테고리 전달
   moviesCategory = async () => {
-    const category = await this.movieRepository.FindCategoty();
+    const category = await this.movieRepository.FindCategory();
+    if (!category) {
+      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
+    }
     return category;
   };
 
@@ -37,15 +40,11 @@ class MovieService {
   };
 
   //찜목록 조회
-  savedVideo = async (saveIdx, contentIdx, profileIdx) => {
-    const category = await this.movieRepository.savedVideo(
-      saveIdx,
-      contentIdx,
-      profileIdx
-    );
-    if (!category) {
-      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
-    }
+  savedVideo = async () => {
+    const category = await this.movieRepository.savedVideo();
+    // if (!category) {
+    //   throw Boom.notFound("찜목록이 존재하지 않습니다.", false);
+    // }
     return category;
   };
 
