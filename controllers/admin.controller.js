@@ -18,18 +18,18 @@ class AdminController {
   postMovie = async (req, res) => {
     try {
       const {
-        title,
-        category,
+        name,
         desc,
+        kind,
+        viewLimit,
         playtime,
-        actor,
-        genre,
-        thumbUrl,
-        movieUrl,
+        videothumbUrl,
+        videoUrl,
+        status
       } = req.body;
 
       const schema = Joi.object({
-        title: Joi.string()
+        name: Joi.string()
           .min(1)
           .max(30)
           .messages({
@@ -37,7 +37,7 @@ class AdminController {
             "string.min": "이 필드는 최소 {{#limit}} 문자 이상이어야 합니다.",
             "string.max": "이 필드는 최대 {{#limit}} 문자 이하여야 합니다.",
           }),
-        category: Joi.string()
+        kind: Joi.string()
           .min(1)
           .max(30)
           .message({
@@ -57,26 +57,26 @@ class AdminController {
           ...messages,
           "any.required": "이 필드는 필수입니다.",
         }),
-        actor: Joi.string().message({
+        viewLimit: Joi.string().message({
           ...messages,
           "any.required": "이 필드는 필수입니다.",
         }),
-        genre: Joi.string().message({
+        status: Joi.string().message({
           ...messages,
           "any.required": "이 필드는 필수입니다.",
         }),
-        thumbUrl: Joi.string().message({
+        videothumbUrl: Joi.string().message({
           ...messages,
           "any.required": "이 필드는 필수입니다.",
         }),
-        movieUrl: Joi.string().message({
+        videoUrl: Joi.string().message({
           ...messages,
           "any.required": "이 필드는 필수입니다.",
         }),
       });
 
       const validate = schema.validate(
-        { title, category, desc, playtime, actor, genre, thumbUrl, movieUrl },
+        { name, kind, desc, playtime, viewLimit, status, videothumbUrl, videoUrl },
         { abortEarly: false }
       );
 
@@ -86,17 +86,17 @@ class AdminController {
         console.log("Validate input");
       }
 
-      await this.adminService.postMovie({
-        title,
-        category,
+      const postedMovie = await this.adminService.postMovie({
+        name,
+        kind,
         desc,
         playtime,
-        actor,
-        genre,
-        thumbUrl,
-        movieUrl,
+        viewLimit,
+        status,
+        videothumbUrl,
+        videoUrl,
       });
-      return res.status(201).json({ message: "영상 등록을 완료했습니다." });
+      return res.status(201).json({postedMovie, message: "영상 등록을 완료했습니다." });
     } catch (error) {
       if (Boom.isBoom(error)) {
         res.status(error.statusCode).json({ errorMessage: error.message }); // 에러 메시지를 설정하면 이쪽으로 빠집니다.
@@ -108,36 +108,36 @@ class AdminController {
 
   updateMovie = async (req, res) => {
     try {
-      const { movieId } = req.params;
+      const { contentIdx } = req.params;
       const {
-        title,
-        category,
+        name,
+        kind,
         desc,
         playtime,
-        actor,
-        genre,
-        thumbUrl,
-        movieUrl,
+        viewLimit,
+        status,
+        videothumbUrl,
+        videoUrl,
       } = req.body;
 
       const updatedElement = {
-        title: null,
-        category: null,
+        name: null,
+        kind: null,
         desc: null,
         playtime: null,
-        actor: null,
-        genre: null,
-        thumbUrl: null,
-        movieUrl: null,
+        viewLimit: null,
+        status: null,
+        videothumbUrl: null,
+        videoUrl: null,
       };
-      if (movieId) {
-        updatedElement.movieId = movieId;
+      if (contentIdx) {
+        updatedElement.contentIdx = contentIdx;
       }
-      if (title) {
-        updatedElement.title = title;
+      if (name) {
+        updatedElement.name = name;
       }
-      if (category) {
-        updatedElement.category = category;
+      if (kind) {
+        updatedElement.kind = kind;
       }
       if (desc) {
         updatedElement.desc = desc;
@@ -145,17 +145,17 @@ class AdminController {
       if (playtime) {
         updatedElement.playtime = playtime;
       }
-      if (actor) {
-        updatedElement.actor = actor;
+      if (viewLimit) {
+        updatedElement.viewLimit = viewLimit;
       }
-      if (genre) {
-        updatedElement.genre = genre;
+      if (status) {
+        updatedElement.status = status;
       }
-      if (thumbUrl) {
-        updatedElement.thumbUrl = thumbUrl;
+      if (videothumbUrl) {
+        updatedElement.videothumbUrl = videothumbUrl;
       }
-      if (movieUrl) {
-        updatedElement.movieUrl = movieUrl;
+      if (videoUrl) {
+        updatedElement.videoUrl = videoUrl;
       }
 
       const updatedMovie = await this.adminService.updateMovie(updatedElement);
@@ -173,16 +173,16 @@ class AdminController {
 
   deleteMovie = async (req, res) => {
     try {
-      const { movieId } = req.params;
+      const { contentIdx } = req.params;
 
-      const movie = await this.adminService.findOneMovie({ movieId });
+      const movie = await this.adminService.findOneMovie({ contentIdx });
       if (!movie) {
         return res
           .status(404)
           .json({ errorMessage: "해당 ID의 영상이 존재하지 않습니다." });
       }
 
-      await this.adminService.deleteMovie({ movieId });
+      await this.adminService.deleteMovie({ contentIdx });
       return res.status(201).json({ message: "영상을 삭제했습니다." });
     } catch (error) {
       if (Boom.isBoom(error)) {
