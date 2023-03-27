@@ -50,6 +50,8 @@ class MovieController {
   //찜목록 조회
   savedVideo = async (req, res, next) => {
     // try {
+    const { user } = res.locals.user;
+    console.log(user);
     const category = await this.movieService.savedVideo();
     res.status(200).json({ saved: category });
     // } catch (error) {
