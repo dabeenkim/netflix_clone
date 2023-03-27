@@ -16,25 +16,14 @@ class UserRepository extends Users {
     return findEmail;
   };
 
-  /**
-   * @param {String} nickname
-   */
-  //nickname 매칭 (회원가입)
-  findBynickname = async (nickname) => {
-    const findNick = await Users.findOne({
-      where: { nickname },
-    });
-    return findNick;
-  };
 
   /**
    * @param {String} email
-   * @param {String} nickname
    * @param {String} password
    */
   //user정보 생성(회원가입)
-  userSignup = async (email, nickname, password) => {
-    const createUser = await Users.create({ email, nickname, password });
+  userSignup = async (email, password) => {
+    const createUser = await Users.create({ email, password });
     return createUser;
   };
 
@@ -42,10 +31,10 @@ class UserRepository extends Users {
   getAllusers = async () => {
     const user = await Users.findAll({
       attributes: [
-        "userId",
         "email",
-        "nickname",
         "password",
+        "userIdx",
+        "status",
         "createdAt",
         "updatedAt",
       ],

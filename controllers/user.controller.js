@@ -33,8 +33,8 @@ class UserController {
   //회원가입
   userSignup = async (req, res, next) => {
     try {
-      const { email, nickname, password } = req.body;
-      await this.userService.userSignup(email, nickname, password);
+      const { email, password } = req.body;
+      await this.userService.userSignup(email, password);
 
       return res.status(201).json({ message: "회원 가입에 성공하였습니다." });
     } catch (error) {
