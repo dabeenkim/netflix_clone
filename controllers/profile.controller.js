@@ -6,9 +6,9 @@ class ProfileController {
   }
   createProfile = async (req, res, next) => {
     try {
-      const { profieName } = req.body;
+      const { profileName } = req.body;
       const { userIdx } = res.locals.user
-      await this.profileService.createProfile(profieName, userIdx);
+      await this.profileService.createProfile(profileName, userIdx);
 
       return res.status(201).json({ message: "프로필 생성에 성공하였습니다." });
     } catch (error) {
@@ -22,6 +22,22 @@ class ProfileController {
       const profile = await this.profileService.getAllProfile(userIdx);
 
       return res.status(200).json({ allProfiles: profile });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  profileLogin = async (req, res, next) => {
+    try {
+      res.clearHeaders;
+
+      const { profileName } = req.params;
+      await this.profileService.profileLogin(profileName);
+
+      const token = await this.profileService.generateToken(profileName);
+      res.set("Authorization", `Bearer ${token}`);
+
+      return res.status(201).json({ message: "로그인에 성공했습니다" });
     } catch (error) {
       next(error);
     }

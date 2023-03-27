@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.UUID,
       },
-      profieName: {
+      profileName: {
         allowNull: false,
         type: DataTypes.STRING,
       },
