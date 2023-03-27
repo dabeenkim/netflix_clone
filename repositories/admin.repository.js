@@ -12,7 +12,7 @@ class AdminRepository {
     thumbUrl,
     movieUrl,
   }) => {
-    await Movies.create({
+    const createdMovie = await Movies.create({
       title,
       category,
       desc,
@@ -22,6 +22,7 @@ class AdminRepository {
       thumbUrl,
       movieUrl,
     });
+    return createdMovie;
   };
 
   findOneMovie = async ({ movieId }) => {
