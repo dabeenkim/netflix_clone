@@ -5,6 +5,7 @@ const {
   Save,
   ViewRank,
   LikeRank,
+  CommonCodes,
 } = require("../models");
 const { Op } = require("sequelize");
 
@@ -20,14 +21,32 @@ class MovieRepository extends Content {
     return findMovies;
   };
 
+  //영상 카테고리 전달
+  FindCategoty = async () => {
+    const findCategory = await CommonCodes.findAll({
+      attributes: ["codeValue", "codeName"],
+    });
+    return findCategory;
+  };
+
   //카테고리별 조회
-  videosByCategory = async (contentIdx) => {
-    const findCategory = await Content.findOne({
-      where: { contentIdx },
-      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+  videosByCategory = async (genre) => {
+    console.log(genre);
+    const findGenre = await CommonCodes.findOne({
+      where: { codeUseColum: "genre", codeValue: genre },
+      attributes: ["codename"],
+    });
+    console.log(findGenre);
+
+    if (!findGenre) {
+      throw new Error(`No matching genre: ${genre}`);
+    }
+
+    const findCategory = await Content.findAll({
+      attributes: ["name", "videoUrl", "videoThumUrl", "contentIdx"],
     });
 
-    return findCategory;
+    return { findGenre, findCategory };
   };
 
   //영상 상세조회

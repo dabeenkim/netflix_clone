@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      codeUseTalbe: {
+      codeUseTable: {
         allowNull: false, // NOT NULL
         type: DataTypes.STRING,
       },

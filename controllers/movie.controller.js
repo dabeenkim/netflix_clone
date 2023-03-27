@@ -15,11 +15,21 @@ class MovieController {
     }
   };
 
+  //영상 카테고리 전달
+  moviesCategory = async (req, res, next) => {
+    try {
+      const category = await this.movieService.moviesCategory();
+      res.status(200).json({ genre: category });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   // 카테고리별 조회
   videosByCategory = async (req, res, next) => {
     try {
-      const { contentIdx } = req.params;
-      const category = await this.movieService.videosByCategory(contentIdx);
+      const { genre } = req.params;
+      const category = await this.movieService.videosByCategory(genre);
       res.status(200).json({ category });
     } catch (error) {
       next(error);
@@ -40,12 +50,7 @@ class MovieController {
   //찜목록 조회
   savedVideo = async (req, res, next) => {
     // try {
-    const { saveIdx, contentIdx, profileIdx } = req.params;
-    const category = await this.movieService.savedVideo(
-      saveIdx,
-      contentIdx,
-      profileIdx
-    );
+    const category = await this.movieService.savedVideo();
     res.status(200).json({ saved: category });
     // } catch (error) {
     //   next(error);
@@ -55,7 +60,7 @@ class MovieController {
   //viewRank순 조회
   viewRank = async (req, res, next) => {
     try {
-      const { viewRankIdx, contentIdx } = req.params;
+      const { profileIdx } = res.locals.profile;
       const category = await this.movieService.viewRank(
         viewRankIdx,
         contentIdx

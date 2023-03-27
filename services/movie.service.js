@@ -11,21 +11,18 @@ class MovieService {
     return movie;
   };
 
-  //카테고리별 조회
-  videosByCategory = async (contentIdx) => {
-    if (!contentIdx) {
-      throw Boom.notFound("영화가 존재하지 않습니다.", false);
-    }
-    const movieClass = await this.movieRepository.videosByCategory(
-      contentIdx,
-      contentIdx.class === 1
-    );
-    const dramaClass = await this.movieRepository.videosByCategory(
-      contentIdx,
-      contentIdx.class === 2
-    );
+  //영상 카테고리 전달
+  moviesCategory = async () => {
+    const category = await this.movieRepository.FindCategoty();
+    return category;
+  };
 
-    const videoList = { movie: movieClass, drama: dramaClass };
+  //카테고리별 조회
+  videosByCategory = async (genre) => {
+    if (!genre) {
+      throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
+    }
+    const videoList = await this.movieRepository.videosByCategory(genre);
 
     return videoList;
   };
