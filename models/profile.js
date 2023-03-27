@@ -62,12 +62,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       viewLimit: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING(8),
+        defaultValue:
+        'VL000001'
       },
       status: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING(8),
+        defaultValue:
+        'PS000001'
       },
       createdAt: {
         allowNull: false, // NOT NULL
