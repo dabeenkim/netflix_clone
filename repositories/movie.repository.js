@@ -6,19 +6,32 @@ const {
   ViewRank,
   LikeRank,
   CommonCodes,
+  Profile,
 } = require("../models");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 
 class MovieRepository extends Content {
   constructor() {
     super();
   }
+
   //전체영상 조회
-  FindAll = async () => {
-    const findMovies = await Content.findAll({
-      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+  FindAll = async (viewLimit) => {
+    const movies = await Content.findAll({
+      attributes: [
+        "contentIdx",
+        "name",
+        "videoUrl",
+        "videoThumUrl",
+        "viewLimit",
+      ],
     });
-    return findMovies;
+
+    const filteredMovies = movies.filter((movie) => {
+      return movie.viewLimit === viewLimit;
+    });
+
+    return filteredMovies;
   };
 
   //영상 카테고리 전달
@@ -31,7 +44,6 @@ class MovieRepository extends Content {
 
   //카테고리별 조회
   videosByCategory = async (genre) => {
-    console.log(genre);
     const findGenre = await CommonCodes.findOne({
       where: { codeUseColum: "genre", codeValue: genre },
       attributes: ["codename"],
@@ -57,7 +69,7 @@ class MovieRepository extends Content {
         "contentIdx",
         "name",
         "videoUrl",
-        "class",
+        "kind",
         "videoThumUrl",
         "Categories.genre", //여기서 불러올때는 데이터베이스의 이름과 동일해야함
         "Participants.person",
@@ -81,23 +93,39 @@ class MovieRepository extends Content {
   };
 
   //찜목록 조회
-  savedVideo = async () => {
+  savedVideo = async (profileIdx) => {
     const findMovies = await Content.findAll({
-      // raw: true,
-      // where: { contentIdx },
-      // attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
-      // include: [
-      //   {
-      //     model: Save,
-      //     where: {
-      //       [Op.and]: [{ saveIdx }, { profileIdx }],
-      //     },
-      //     attributes: [], // 추가한 옵션
-      //   },
-      // ],
+      raw: true,
+      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+      include: [
+        {
+          model: Save,
+          where: {
+            [Op.and]: [{ profileIdx }],
+          },
+          attributes: [], // 추가한 옵션
+        },
+      ],
     });
     return findMovies;
   };
+
+  // savedVideo = async (profileIdx) => {
+  //   const findMovies = await Content.findAll({
+  //     raw: true,
+  //     attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+  //     include: [
+  //       {
+  //         model: Save,
+  //         where: {
+  //           [Op.and]: [{ "Saves.profileIdx": profilIdx }, { profileIdx }],
+  //         },
+  //         attributes: [], // 추가한 옵션
+  //       },
+  //     ],
+  //   });
+  //   return findMovies;
+  // };
 
   //viewRank순 조회
   viewRank = async (viewRankIdx, contentIdx) => {
