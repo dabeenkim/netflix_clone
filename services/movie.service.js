@@ -6,8 +6,8 @@ class MovieService {
     this.movieRepository = new MovieRepository();
   }
   //전체영상 조회
-  allMovies = async () => {
-    const movie = await this.movieRepository.FindAll();
+  allMovies = async (viewLimit) => {
+    const movie = await this.movieRepository.FindAll(viewLimit);
     return movie;
   };
 
@@ -40,8 +40,8 @@ class MovieService {
   };
 
   //찜목록 조회
-  savedVideo = async () => {
-    const category = await this.movieRepository.savedVideo();
+  savedVideo = async (profileIdx) => {
+    const category = await this.movieRepository.savedVideo(profileIdx);
     // if (!category) {
     //   throw Boom.notFound("찜목록이 존재하지 않습니다.", false);
     // }

@@ -5,7 +5,7 @@ const { Profile } = require("../models");
 
 module.exports = async (req, res, next) => {
   const authorization = req.headers.authorization;
-  console.log(authorization);
+  // console.log(authorization);
 
   const [authType, authToken] = (authorization ?? "").split(" ");
 
@@ -23,6 +23,7 @@ module.exports = async (req, res, next) => {
     });
 
     res.locals.profile = profile;
+    // console.log(profile);
 
     next();
   } catch (err) {
