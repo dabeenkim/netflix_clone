@@ -8,7 +8,6 @@ const likeRouter = require("./like.route");
 
 router.use("/user", userRouter);
 router.use("/", videoRouter);
-router.use("/likes", likeRouter);
-
+// router.use("/likes", likeRouter);
 
 module.exports = router;
