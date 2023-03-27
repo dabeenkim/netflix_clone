@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       codeValue: {
         allowNull: false, // NOT NULL
+        unique: true,
         type: DataTypes.STRING(8),
       },
       codeName: {

@@ -7,37 +7,37 @@ class AdminService {
   }
 
   postMovie = async ({
-    title,
-    category,
+    name,
+    kind,
     desc,
+    viewLimit,
     playtime,
-    actor,
-    genre,
-    thumbUrl,
-    movieUrl,
+    status,
+    videothumbUrl,
+    videoUrl,
   }) => {
     try {
       if (
-        !title ||
-        !category ||
+        !name ||
+        !kind ||
         !desc ||
+        !viewLimit ||
         !playtime ||
-        !actor ||
-        !genre ||
-        !thumbUrl ||
-        !movieUrl
+        !status ||
+        !videothumbUrl ||
+        !videoUrl
       ) {
         throw Boom.preconditionFailed("데이터 형식이 올바르지 않습니다.");
       }
       await this.adminRepository.postMovie({
-        title,
-        category,
+        name,
+        kind,
         desc,
+        viewLimit,
         playtime,
-        actor,
-        genre,
-        thumbUrl,
-        movieUrl,
+        status,
+        videothumbUrl,
+        videoUrl,
       });
     } catch (error) {
       throw Boom.preconditionFailed("영상 등록에 실패하였습니다.");
@@ -45,18 +45,18 @@ class AdminService {
   };
 
   updateMovie = async ({
-    movieId,
-    title,
-    category,
+    contentIdx,
+    name,
+    kind,
     desc,
+    viewLimit,
     playtime,
-    actor,
-    genre,
-    thumbUrl,
-    movieUrl,
+    status,
+    videothumbUrl,
+    videoUrl,
   }) => {
     try {
-      const movie = await this.adminRepository.findOneMovie({ movieId });
+      const movie = await this.adminRepository.findOneMovie({ contentIdx });
       if (!movie) {
         return res
           .status(404)
@@ -64,11 +64,11 @@ class AdminService {
       }
 
       let updatedMovie;
-      if (title) {
-        updatedMovie = await movie.update({ title });
+      if (name) {
+        updatedMovie = await movie.update({ name });
       }
-      if (category) {
-        updatedMovie = await movie.update({ category });
+      if (kind) {
+        updatedMovie = await movie.update({ kind });
       }
       if (desc) {
         updatedMovie = await movie.update({ desc });
@@ -76,17 +76,17 @@ class AdminService {
       if (playtime) {
         updatedMovie = await movie.update({ playtime });
       }
-      if (actor) {
-        updatedMovie = await movie.update({ actor });
+      if (viewLimit) {
+        updatedMovie = await movie.update({ viewLimit });
       }
-      if (genre) {
-        updatedMovie = await movie.update({ genre });
+      if (status) {
+        updatedMovie = await movie.update({ status });
       }
-      if (thumbUrl) {
-        updatedMovie = await movie.update({ thumbUrl });
+      if (videothumbUrl) {
+        updatedMovie = await movie.update({ videothumbUrl });
       }
-      if (movieUrl) {
-        updatedMovie = await movie.update({ movieUrl });
+      if (videoUrl) {
+        updatedMovie = await movie.update({ videoUrl });
       }
 
       return updatedMovie;
@@ -95,16 +95,16 @@ class AdminService {
     }
   };
 
-  deleteMovie = async ({ movieId }) => {
+  deleteMovie = async ({ contentIdx }) => {
     try {
-      const movie = await this.adminRepository.findOneMovie({ movieId });
+      const movie = await this.adminRepository.findOneMovie({ contentIdx });
       if (!movie) {
         return res
           .status(404)
           .json({ errorMessage: "해당 ID의 영상이 존재하지 않습니다." });
       }
 
-      await this.adminRepository.deleteMovie({ movieId });
+      await this.adminRepository.deleteMovie({ contentIdx });
     } catch (error) {
       throw Boom.preconditionFailed("영상 삭제에 실패하였습니다.");
     }
