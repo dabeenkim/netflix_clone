@@ -25,11 +25,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       codeUseColum: {
         allowNull: false, // NOT NULL
-        unique: true,
         type: DataTypes.STRING,
       },
       codeValue: {
         allowNull: false, // NOT NULL
+        unique: true,
         type: DataTypes.STRING(8),
       },
       codeName: {
