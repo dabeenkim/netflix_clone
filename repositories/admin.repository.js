@@ -1,37 +1,63 @@
-const { Movies } = require("../models");
+const { Content } = require("../models");
 const { Op } = require("sequelize");
+const _ = require('lodash');
 
 class AdminRepository {
   postMovie = async ({
-    title,
-    category,
+    name,
+    kind,
     desc,
     playtime,
-    actor,
-    genre,
-    thumbUrl,
-    movieUrl,
+    viewLimit,
+    status,
+    videothumbUrl,
+    videoUrl,
   }) => {
-    const createdMovie = await Movies.create({
-      title,
-      category,
+    const createdMovie = await Content.create({
+      name,
+      kind,
       desc,
       playtime,
-      actor,
-      genre,
-      thumbUrl,
-      movieUrl,
+      viewLimit,
+      status,
+      videothumbUrl,
+      videoUrl,
     });
     return createdMovie;
   };
 
-  findOneMovie = async ({ movieId }) => {
-    const movie = await Movies.findOne({ where: { movieId } });
+  updateMovie = async ({
+    contentIdx,
+    name,
+    kind,
+    desc,
+    playtime,
+    viewLimit,
+    status,
+    videothumbUrl,
+    videoUrl,
+  }) => {
+    const updatedValues = _.pickBy({
+      name,
+      kind,
+      desc,
+      playtime,
+      viewLimit,
+      status,
+      videothumbUrl,
+      videoUrl,
+    });
+    const updatedMovie  = await Content.update(updatedValues, { where: {contentIdx} });
+    return updatedMovie;
+  };
+
+  findOneMovie = async ({ contentIdx }) => {
+    const movie = await Content.findOne({ where: { contentIdx } });
     return movie;
   };
 
-  deleteMovie = async ({ movieId }) => {
-    await Movies.destroy({ where: { movieId } });
+  deleteMovie = async ({ contentIdx }) => {
+    await Content.destroy({ where: { contentIdx } });
     return;
   };
 }

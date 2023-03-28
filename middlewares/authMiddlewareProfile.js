@@ -5,7 +5,7 @@ const { Profile } = require("../models");
 
 module.exports = async (req, res, next) => {
   const authorization = req.headers.authorization;
-  console.log(authorization);
+  // console.log(authorization);
 
   const [authType, authToken] = (authorization ?? "").split(" ");
 
@@ -16,13 +16,14 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const { profileName } = jwt.verify(authToken, process.env.SECRET_KEY);
+    const { profileIdx } = jwt.verify(authToken, process.env.SECRET_KEY);
 
     const profile = await Profile.findOne({
-      where: { profileName },
+      where: { profileIdx },
     });
 
     res.locals.profile = profile;
+    // console.log(profile);
 
     next();
   } catch (err) {

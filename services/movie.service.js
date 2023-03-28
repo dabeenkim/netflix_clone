@@ -6,8 +6,8 @@ class MovieService {
     this.movieRepository = new MovieRepository();
   }
   //전체영상 조회
-  allMovies = async () => {
-    const movie = await this.movieRepository.FindAll();
+  allMovies = async (viewLimit) => {
+    const movie = await this.movieRepository.FindAll(viewLimit);
     return movie;
   };
 
@@ -21,11 +21,14 @@ class MovieService {
   };
 
   //카테고리별 조회
-  videosByCategory = async (genre) => {
+  videosByCategory = async (genre, viewLimit) => {
     if (!genre) {
       throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
     }
-    const videoList = await this.movieRepository.videosByCategory(genre);
+    const videoList = await this.movieRepository.videosByCategory(
+      genre,
+      viewLimit
+    );
 
     return videoList;
   };
@@ -40,20 +43,20 @@ class MovieService {
   };
 
   //찜목록 조회
-  savedVideo = async () => {
-    const category = await this.movieRepository.savedVideo();
-    // if (!category) {
-    //   throw Boom.notFound("찜목록이 존재하지 않습니다.", false);
-    // }
+  savedVideo = async (profileIdx, viewLimit) => {
+    const category = await this.movieRepository.savedVideo(
+      profileIdx,
+      viewLimit
+    );
+    if (!category) {
+      throw Boom.notFound("찜목록이 존재하지 않습니다.", false);
+    }
     return category;
   };
 
   //viewRank순 조회
-  viewRank = async (viewRankIdx, contentIdx) => {
-    const category = await this.movieRepository.viewRank(
-      viewRankIdx,
-      contentIdx
-    );
+  viewRank = async (profileIdx, viewLimit) => {
+    const category = await this.movieRepository.viewRank(profileIdx, viewLimit);
     if (!category) {
       throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
     }
@@ -61,11 +64,8 @@ class MovieService {
   };
 
   //likeRank순 조회
-  likeRank = async (likeRankIdx, contentIdx) => {
-    const category = await this.movieRepository.likeRank(
-      likeRankIdx,
-      contentIdx
-    );
+  likeRank = async (profileIdx, viewLimit) => {
+    const category = await this.movieRepository.likeRank(profileIdx, viewLimit);
     if (!category) {
       throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
     }

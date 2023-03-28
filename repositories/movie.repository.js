@@ -6,19 +6,35 @@ const {
   ViewRank,
   LikeRank,
   CommonCodes,
+  Profile,
 } = require("../models");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 
 class MovieRepository extends Content {
   constructor() {
     super();
   }
+
   //전체영상 조회
-  FindAll = async () => {
-    const findMovies = await Content.findAll({
-      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+  FindAll = async (viewLimit) => {
+    const movies = await Content.findAll({
+      attributes: [
+        "contentIdx",
+        "name",
+        "videoUrl",
+        "videoThumUrl",
+        "viewLimit",
+      ],
     });
-    return findMovies;
+
+    const filteredMovies = movies.filter((movie) => {
+      return (
+        movie.viewLimit === viewLimit ||
+        (viewLimit === "VL000001" && movie.viewLimit === "VL000002")
+      );
+    });
+
+    return filteredMovies;
   };
 
   //영상 카테고리 전달
@@ -30,23 +46,45 @@ class MovieRepository extends Content {
   };
 
   //카테고리별 조회
-  videosByCategory = async (genre) => {
-    console.log(genre);
+  videosByCategory = async (genre, viewLimit) => {
     const findGenre = await CommonCodes.findOne({
       where: { codeUseColum: "genre", codeValue: genre },
-      attributes: ["codename"],
+      attributes: ["codename", "codeValue"],
     });
-    console.log(findGenre);
 
     if (!findGenre) {
       throw new Error(`No matching genre: ${genre}`);
     }
 
     const findCategory = await Content.findAll({
-      attributes: ["name", "videoUrl", "videoThumUrl", "contentIdx"],
+      raw: true,
+      attributes: [
+        "name",
+        "videoUrl",
+        "videoThumUrl",
+        "contentIdx",
+        "viewLimit",
+      ],
+      include: [
+        {
+          model: Category,
+          as: "Categories",
+          attributes: ["genre"],
+          where: {
+            genre: findGenre.dataValues.codeValue,
+          },
+        },
+      ],
     });
 
-    return { findGenre, findCategory };
+    const filteredVideos = findCategory.filter((movie) => {
+      return (
+        movie.viewLimit === viewLimit ||
+        (viewLimit === "VL000001" && movie.viewLimit === "VL000002")
+      );
+    });
+
+    return { filteredVideos };
   };
 
   //영상 상세조회
@@ -57,7 +95,7 @@ class MovieRepository extends Content {
         "contentIdx",
         "name",
         "videoUrl",
-        "class",
+        "kind",
         "videoThumUrl",
         "Categories.genre", //여기서 불러올때는 데이터베이스의 이름과 동일해야함
         "Participants.person",
@@ -81,63 +119,120 @@ class MovieRepository extends Content {
   };
 
   //찜목록 조회
-  savedVideo = async () => {
+  savedVideo = async (profileIdx, viewLimit) => {
     const findMovies = await Content.findAll({
-      // raw: true,
-      // where: { contentIdx },
-      // attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
-      // include: [
-      //   {
-      //     model: Save,
-      //     where: {
-      //       [Op.and]: [{ saveIdx }, { profileIdx }],
-      //     },
-      //     attributes: [], // 추가한 옵션
-      //   },
-      // ],
+      raw: true,
+      attributes: [
+        "contentIdx",
+        "name",
+        "videoUrl",
+        "videoThumUrl",
+        "viewLimit",
+      ],
+      include: [
+        {
+          model: Save,
+          where: {
+            profileIdx: profileIdx,
+          },
+          attributes: ["profileIdx"], // Save 모델의 profileIdx 값도 반환
+          required: true, // Save 모델과 조인 시 INNER JOIN을 사용하여 해당 조건에 맞는 값만 반환
+        },
+      ],
     });
-    return findMovies;
+
+    const filteredVideos = findMovies.filter((movie) => {
+      return (
+        movie.viewLimit === viewLimit ||
+        (viewLimit === "VL000001" && movie.viewLimit === "VL000002")
+      );
+    });
+
+    return filteredVideos;
   };
 
   //viewRank순 조회
-  viewRank = async (viewRankIdx, contentIdx) => {
-    console.log(viewRankIdx);
+  viewRank = async (profileIdx, viewLimit) => {
     const findMovies = await Content.findAll({
       raw: true,
-      where: { contentIdx },
-      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
-      limit: 10,
+      attributes: [
+        "contentIdx",
+        "name",
+        "videoUrl",
+        "videoThumUrl",
+        "viewLimit",
+      ],
       include: [
         {
           model: ViewRank,
-          where: {
-            [Op.and]: [{ viewRankIdx }, { contentIdx }],
-          },
-          attributes: [], //값을 설정해주지않으면 viewRank의 모든 값이나오게된다.
+          as: "ViewRanks",
+          attributes: [],
         },
       ],
+      order: [[Sequelize.literal("COUNT(ViewRanks.contentIdx)"), "DESC"]],
+      group: ["Content.contentIdx"],
     });
-    return findMovies;
+
+    const filteredVideos = findMovies.filter((movie) => {
+      return (
+        movie.viewLimit === viewLimit ||
+        (viewLimit === "VL000001" && movie.viewLimit === "VL000002")
+      );
+    });
+
+    return filteredVideos;
   };
 
   //likeRank순 조회
-  likeRank = async (likeRankIdx, contentIdx) => {
-    const findMovies = await Content.findAll({
-      raw: true,
-      where: { contentIdx },
-      attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
-      limit: 10,
-      include: [
-        {
-          model: LikeRank,
-          where: {
-            [Op.and]: [{ likeRankIdx }, { contentIdx }],
-          },
-        },
-      ],
-    });
-    return findMovies;
-  };
+  // likeRank = async (profileIdx, viewLimit) => {
+  //   // Get movies with the given contentIdx and likeRankIdx
+  //   const findMovies = await Content.findAll({
+  //     raw: true,
+  //     attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl","viewLimit"],
+  //     include: [
+  //       {
+  //         model: LikeRank,Like,
+  //         attributes: []
+  //       },
+  //     ],
+  //   });
+
+  //   // Update the LikeRanks table with the likeCount
+  //   const likeCount = await Like.count({ where: { contentIdx } });
+  //   await LikeRank.upsert({ contentIdx, likeRankIdx, ProfileIdx });
+
+  //   // Get the updated LikeRank data (sorted by likeCount in descending order)
+  //   const likeRanks = await LikeRank.findAll({
+  //     where: { likeRankIdx },
+  //     order: [["likeCount", "DESC"]],
+  //   });
+
+  //   return { findMovies, likeRanks };
+  // };
+
+  // likeRank = async (likeRankIdx, contentIdx) => {
+  //   const findMovies = await Content.findAll({
+  //     raw: true,
+  //     where: { contentIdx },
+  //     attributes: ["contentIdx", "name", "videoUrl", "videoThumUrl"],
+  //     include: [
+  //       {
+  //         model: LikeRank,
+  //         where: {
+  //           [Op.and]: [{ likeRankIdx }, { contentIdx }],
+  //         },
+  //       },
+  //     ],
+  //   });
+  //   const likeCount = await Like.count({ where: { contentIdx } });
+  //   await LikeRank.upsert({ contentIdx, likeRankIdx, likeCount });
+
+  //   const likeRanks = await LikeRank.findAll({
+  //     where: { likeRankIdx },
+  //     order: [["likeCount", "DESC"]], // sort by likeCount in descending order
+  //   });
+  //   return { findMovies, likeRanks };
+  // };
 
   //viewHistory가 있을때 조회
   viewHistory = async (viewHistoryIdx, contentIdx) => {

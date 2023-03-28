@@ -1,5 +1,6 @@
 const AdminRepository = require("../repositories/admin.repository");
 const Boom = require("boom");
+const _ = require('lodash');
 
 class AdminService {
   constructor() {
@@ -63,32 +64,11 @@ class AdminService {
           .json({ errorMessage: "해당 ID의 영상이 존재하지 않습니다." });
       }
 
-      let updatedMovie;
-      if (name) {
-        updatedMovie = await movie.update({ name });
-      }
-      if (kind) {
-        updatedMovie = await movie.update({ kind });
-      }
-      if (desc) {
-        updatedMovie = await movie.update({ desc });
-      }
-      if (playtime) {
-        updatedMovie = await movie.update({ playtime });
-      }
-      if (viewLimit) {
-        updatedMovie = await movie.update({ viewLimit });
-      }
-      if (status) {
-        updatedMovie = await movie.update({ status });
-      }
-      if (videothumbUrl) {
-        updatedMovie = await movie.update({ videothumbUrl });
-      }
-      if (videoUrl) {
-        updatedMovie = await movie.update({ videoUrl });
-      }
+      const updatedValues = _.pickBy({
+        contentIdx, name, kind, desc, playtime, viewLimit, status, videoUrl, videothumbUrl
+      }, _.identity);
 
+      const updatedMovie = await this.adminRepository.updateMovie(updatedValues);
       return updatedMovie;
     } catch (error) {
       throw Boom.preconditionFailed("영상 정보 수정에 실패하였습니다.");
