@@ -43,20 +43,20 @@ class MovieService {
   };
 
   //찜목록 조회
-  savedVideo = async (profileIdx) => {
-    const category = await this.movieRepository.savedVideo(profileIdx);
-    // if (!category) {
-    //   throw Boom.notFound("찜목록이 존재하지 않습니다.", false);
-    // }
+  savedVideo = async (profileIdx, viewLimit) => {
+    const category = await this.movieRepository.savedVideo(
+      profileIdx,
+      viewLimit
+    );
+    if (!category) {
+      throw Boom.notFound("찜목록이 존재하지 않습니다.", false);
+    }
     return category;
   };
 
   //viewRank순 조회
-  viewRank = async (viewRankIdx, contentIdx) => {
-    const category = await this.movieRepository.viewRank(
-      viewRankIdx,
-      contentIdx
-    );
+  viewRank = async (profileIdx, viewLimit) => {
+    const category = await this.movieRepository.viewRank(profileIdx, viewLimit);
     if (!category) {
       throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
     }
@@ -64,11 +64,8 @@ class MovieService {
   };
 
   //likeRank순 조회
-  likeRank = async (likeRankIdx, contentIdx) => {
-    const category = await this.movieRepository.likeRank(
-      likeRankIdx,
-      contentIdx
-    );
+  likeRank = async (profileIdx, viewLimit) => {
+    const category = await this.movieRepository.likeRank(profileIdx, viewLimit);
     if (!category) {
       throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
     }
