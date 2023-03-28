@@ -1,5 +1,6 @@
-const { Movies } = require("../models");
+const { Content } = require("../models");
 const { Op } = require("sequelize");
+const _ = require('lodash');
 
 class AdminRepository {
   postMovie = async ({
@@ -12,7 +13,7 @@ class AdminRepository {
     videothumbUrl,
     videoUrl,
   }) => {
-    const createdMovie = await Movies.create({
+    const createdMovie = await Content.create({
       name,
       kind,
       desc,
@@ -25,13 +26,38 @@ class AdminRepository {
     return createdMovie;
   };
 
+  updateMovie = async ({
+    contentIdx,
+    name,
+    kind,
+    desc,
+    playtime,
+    viewLimit,
+    status,
+    videothumbUrl,
+    videoUrl,
+  }) => {
+    const updatedValues = _.pickBy({
+      name,
+      kind,
+      desc,
+      playtime,
+      viewLimit,
+      status,
+      videothumbUrl,
+      videoUrl,
+    });
+    const updatedMovie  = await Content.update(updatedValues, { where: {contentIdx} });
+    return updatedMovie;
+  };
+
   findOneMovie = async ({ contentIdx }) => {
-    const movie = await Movies.findOne({ where: { contentIdx } });
+    const movie = await Content.findOne({ where: { contentIdx } });
     return movie;
   };
 
   deleteMovie = async ({ contentIdx }) => {
-    await Movies.destroy({ where: { contentIdx } });
+    await Content.destroy({ where: { contentIdx } });
     return;
   };
 }

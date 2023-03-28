@@ -1,6 +1,7 @@
 const AdminService = require("../services/admin.service");
 const Boom = require("boom");
 const Joi = require("joi");
+const _ = require('lodash');
 const multer = require("multer");
 const schema = require("../schemas/adminMovie.schema");
 
@@ -66,49 +67,15 @@ class AdminController {
       const videothumbUrl = `http://localhost:3050/uploads/${filenameImage}`;
       const videoUrl = `http://localhost:3050/uploads/${filenameVideo}`;
 
-      // if(!filenameImage || !filenameVideo){
-      //   throw Boom.preconditionFailed('파일이 업로드되지 않았습니다.', false);
-      // }
+      const updateObj = _.pickBy({ name, kind, desc, playtime, viewLimit, status}, (value)=>{
+        return value !== undefined;
+      });
 
-      const updatedElement = {
-        name: null,
-        kind: null,
-        desc: null,
-        playtime: null,
-        viewLimit: null,
-        status: null,
-        videothumbUrl: null,
-        videoUrl: null,
-      };
-      if (contentIdx) {
-        updatedElement.contentIdx = contentIdx;
-      }
-      if (name) {
-        updatedElement.name = name;
-      }
-      if (kind) {
-        updatedElement.kind = kind;
-      }
-      if (desc) {
-        updatedElement.desc = desc;
-      }
-      if (playtime) {
-        updatedElement.playtime = playtime;
-      }
-      if (viewLimit) {
-        updatedElement.viewLimit = viewLimit;
-      }
-      if (status) {
-        updatedElement.status = status;
-      }
-      if (videothumbUrl) {
-        updatedElement.videothumbUrl = videothumbUrl;
-      }
-      if (videoUrl) {
-        updatedElement.videoUrl = videoUrl;
-      }
+      updateObj.contentIdx = contentIdx;
+      updateObj.videothumbUrl = videothumbUrl;
+      updateObj.videoUrl = videoUrl;
 
-      const updatedMovie = await this.adminService.updateMovie(updatedElement);
+      const updatedMovie = await this.adminService.updateMovie(updateObj);
       return res
         .status(201)
         .json({ updatedMovie, message: "정보 수정을 완료했습니다." });
