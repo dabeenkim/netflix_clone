@@ -7,13 +7,13 @@ class MovieController {
   }
   //전체영상 조회
   allMovies = async (req, res, next) => {
-    // try {
-    const { viewLimit } = res.locals.profile;
-    const movie = await this.movieService.allMovies(viewLimit);
-    res.status(200).json({ movies: movie });
-    // } catch (error) {
-    //   next(error);
-    // }
+    try {
+      const { viewLimit } = res.locals.profile;
+      const movie = await this.movieService.allMovies(viewLimit);
+      res.status(200).json({ movies: movie });
+    } catch (error) {
+      next(error);
+    }
   };
 
   //영상 카테고리 전달
@@ -28,13 +28,14 @@ class MovieController {
 
   // 카테고리별 조회
   videosByCategory = async (req, res, next) => {
-    try {
-      const { genre } = req.params;
-      const category = await this.movieService.videosByCategory(genre);
-      res.status(200).json({ category });
-    } catch (error) {
-      next(error);
-    }
+    // try {
+    const { genre } = req.params;
+    const { viewLimit } = res.locals.profile;
+    const category = await this.movieService.videosByCategory(genre, viewLimit);
+    res.status(200).json({ category });
+    // } catch (error) {
+    //   next(error);
+    // }
   };
 
   //영상 상세조회
