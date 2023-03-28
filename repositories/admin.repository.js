@@ -3,35 +3,35 @@ const { Op } = require("sequelize");
 
 class AdminRepository {
   postMovie = async ({
-    title,
-    category,
+    name,
+    kind,
     desc,
     playtime,
-    actor,
-    genre,
-    thumbUrl,
-    movieUrl,
+    viewLimit,
+    status,
+    videothumbUrl,
+    videoUrl,
   }) => {
     const createdMovie = await Movies.create({
-      title,
-      category,
+      name,
+      kind,
       desc,
       playtime,
-      actor,
-      genre,
-      thumbUrl,
-      movieUrl,
+      viewLimit,
+      status,
+      videothumbUrl,
+      videoUrl,
     });
     return createdMovie;
   };
 
-  findOneMovie = async ({ movieId }) => {
-    const movie = await Movies.findOne({ where: { movieId } });
+  findOneMovie = async ({ contentIdx }) => {
+    const movie = await Movies.findOne({ where: { contentIdx } });
     return movie;
   };
 
-  deleteMovie = async ({ movieId }) => {
-    await Movies.destroy({ where: { movieId } });
+  deleteMovie = async ({ contentIdx }) => {
+    await Movies.destroy({ where: { contentIdx } });
     return;
   };
 }
