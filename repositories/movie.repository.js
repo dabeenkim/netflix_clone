@@ -28,7 +28,10 @@ class MovieRepository extends Content {
     });
 
     const filteredMovies = movies.filter((movie) => {
-      return movie.viewLimit === viewLimit;
+      return (
+        movie.viewLimit === viewLimit ||
+        (viewLimit === "VL000001" && movie.viewLimit === "VL000002")
+      );
     });
 
     return filteredMovies;
@@ -43,22 +46,45 @@ class MovieRepository extends Content {
   };
 
   //카테고리별 조회
-  videosByCategory = async (genre) => {
+  videosByCategory = async (genre, viewLimit) => {
     const findGenre = await CommonCodes.findOne({
       where: { codeUseColum: "genre", codeValue: genre },
-      attributes: ["codename"],
+      attributes: ["codename", "codeValue"],
     });
-    console.log(findGenre);
 
     if (!findGenre) {
       throw new Error(`No matching genre: ${genre}`);
     }
 
     const findCategory = await Content.findAll({
-      attributes: ["name", "videoUrl", "videoThumUrl", "contentIdx"],
+      raw: true,
+      attributes: [
+        "name",
+        "videoUrl",
+        "videoThumUrl",
+        "contentIdx",
+        "viewLimit",
+      ],
+      include: [
+        {
+          model: Category,
+          as: "Categories",
+          attributes: ["genre"],
+          where: {
+            genre: findGenre.dataValues.codeValue,
+          },
+        },
+      ],
     });
 
-    return { findGenre, findCategory };
+    const filteredVideos = findCategory.filter((movie) => {
+      return (
+        movie.viewLimit === viewLimit ||
+        (viewLimit === "VL000001" && movie.viewLimit === "VL000002")
+      );
+    });
+
+    return { filteredVideos };
   };
 
   //영상 상세조회

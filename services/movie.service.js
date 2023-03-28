@@ -21,11 +21,14 @@ class MovieService {
   };
 
   //카테고리별 조회
-  videosByCategory = async (genre) => {
+  videosByCategory = async (genre, viewLimit) => {
     if (!genre) {
       throw Boom.notFound("카테고리가 존재하지 않습니다.", false);
     }
-    const videoList = await this.movieRepository.videosByCategory(genre);
+    const videoList = await this.movieRepository.videosByCategory(
+      genre,
+      viewLimit
+    );
 
     return videoList;
   };
