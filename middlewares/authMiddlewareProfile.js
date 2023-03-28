@@ -16,10 +16,10 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const { profileName } = jwt.verify(authToken, process.env.SECRET_KEY);
+    const { profileIdx } = jwt.verify(authToken, process.env.SECRET_KEY);
 
     const profile = await Profile.findOne({
-      where: { profileName },
+      where: { profileIdx },
     });
 
     res.locals.profile = profile;
