@@ -136,7 +136,7 @@ class MovieRepository extends Content {
       })
       .map((p) => p.dataValues.codename);
     return {
-      [findOnesMovie.name]: findOnesMovie,
+      Video: findOnesMovie,
       actor: personCodes,
     };
   };
